@@ -39,7 +39,7 @@ public class DBmanager {
 
     // delete todo_object
     public void delete (int todoid){
-        database.delete("dbtodo.db", "id = "+ todoid, null);
+        database.delete("dbtodo", "id = "+ todoid, null);
     }
     // ?, new String[ ] {String.valueOf(id)} );
 

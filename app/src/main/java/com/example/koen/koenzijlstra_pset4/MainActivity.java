@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -31,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.lvtodo);
 
 
-
         // set content of the listview
         lvcontent(getApplicationContext());
+
     }
 
     public void lvcontent (Context context) {
@@ -56,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
         listadapter = new Listadapter(getApplicationContext(), allchores);
         listView.setAdapter(listadapter);
+
+
+        // remove gedeelte, komt via lvcontent nu in oncreate
+        createlongclicklistener(listView);
 
 //        If the items in your to-do list are stored into an ArrayList, the app’s GUI won’t notice when
 //        you add or remove an item from the list. That is, you’ll modify the ArrayList state but the
@@ -82,4 +87,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void createlongclicklistener(ListView view) {
+        view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                TODOobj chore = (TODOobj) listView.getItemAtPosition(position);
+
+                dBmanager.delete(chore.getId());
+
+                listadapter.remove(chore); // wat gaat hier fout
+                listadapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+
+    }
 }
