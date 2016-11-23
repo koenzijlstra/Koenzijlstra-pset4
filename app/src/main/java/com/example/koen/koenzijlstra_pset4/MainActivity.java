@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.choreinput) ;
         dBmanager = new DBmanager(getApplicationContext());
         listView = (ListView)findViewById(R.id.lvtodo);
+
 
 
         // set content of the listview
@@ -64,12 +66,20 @@ public class MainActivity extends AppCompatActivity {
 //        during rotation.
     }
 
-    // when button is clicked, create the chore
+    // closes the keyboard that showes up when/after typing. from http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+    public void closekeys () {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    }
+
+    // when button is clicked, create the chore and close keyboard
     public void createchore (View view) {
         dBmanager.insert(editText.getText().toString());
         lvcontent(getApplicationContext());
         // clear the edittext view
         editText.setText("");
+        closekeys();
     }
+
 
 }
