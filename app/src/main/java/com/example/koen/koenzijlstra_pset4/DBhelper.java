@@ -4,36 +4,31 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-// creating and recreating the database!
-
 public class DBhelper extends SQLiteOpenHelper {
 
+    // table name, database name and database version
     public static final String TABLE_NAME = "dbtodo";
     static final String DB_NAME = "dbtodo.db";
-    static final int DATABASE_VERSION = 1;
+    static final int DATABASE_VERSION = 3;
 
     // set fields of database schema. table collumns
     public static final String _ID = "id";
     public static final String todo = "todo";
-
-//    private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + _ID
-//            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + todo_ + " TEXT NOT NULL );";
-
+    public static final String CHECKED = "checked";
 
     // constructor
     public DBhelper(Context context) {
         super(context, TABLE_NAME, null, DATABASE_VERSION); }
-
 
     // oncreate
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + "(" +
                 _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                todo + " TEXT NOT NULL);");
+                todo + " TEXT NOT NULL, " + CHECKED + " BOOLEAN NOT NULL);");
     }
 
-    // onupgrade
+    // onupgrade -> necessary?
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -42,5 +37,4 @@ public class DBhelper extends SQLiteOpenHelper {
         // create new table
         onCreate(db);
     }
-
 }

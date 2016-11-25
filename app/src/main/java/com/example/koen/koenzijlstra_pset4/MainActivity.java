@@ -16,7 +16,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private ListView listView;
     private DBmanager dBmanager;
     private Listadapter listadapter;
@@ -27,48 +26,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // find the edittext where user writes his chore. create new database manager, find listview that displays all todos
         editText = (EditText) findViewById(R.id.choreinput) ;
         dBmanager = new DBmanager(getApplicationContext());
         listView = (ListView)findViewById(R.id.lvtodo);
 
-
         // set content of the listview
         lvcontent(getApplicationContext());
-
+        // start function that deletes item when item is hold
+        createlongclicklistener(listView);
     }
 
     public void lvcontent (Context context) {
-//        String[] todo_ = {"The dishes", "Homework", "Bring Jimmy to school", "Meeting at 21:00"};
-//        ListAdapter theadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, todo);
-//        ListView thelistview = (ListView) findViewById(R.id.lvtodo);
-//        thelistview.setAdapter(theadapter);
-
+        // retrieve list of all todos
         List chores = dBmanager.getalltodos();
 
+        // new arraylist todo_ objects
         ArrayList<TODOobj> allchores = new ArrayList<TODOobj>();
 
+        // loop over list, get objects, remember id, string and checked. add to arraylist
         for (int i = 0; i < chores.size(); i++){
             TODOobj todoobj = (TODOobj) chores.get(i);
+            boolean checked = todoobj.ischecked();
             Integer id = todoobj.getId();
             String todo = todoobj.getText();
-
-            allchores.add(new TODOobj(id, todo));
+            allchores.add(new TODOobj(id, todo, checked));
         }
 
+        // create a new Listadapter, set as adapter for listview
         listadapter = new Listadapter(getApplicationContext(), allchores);
         listView.setAdapter(listadapter);
-
-
-        // remove gedeelte, komt via lvcontent nu in oncreate
-        createlongclicklistener(listView);
-
-//        If the items in your to-do list are stored into an ArrayList, the app’s GUI won’t notice when
-//        you add or remove an item from the list. That is, you’ll modify the ArrayList state but the
-//        graphical list on the screen won’t update to match. To fix this, you have to call the method
-//        notifyDataSetChanged() on your ArrayAdapter to tell it that the underlying array list has
-//        changed. To be able to do this, of course, you’ll have to save your ArrayList and your
-//        ArrayAdapter as private fields inside your activity. Use a Bundle to save the list’s data
-//        during rotation.
     }
 
     // closes the keyboard that showes up when/after typing. from http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
@@ -81,25 +68,23 @@ public class MainActivity extends AppCompatActivity {
     public void createchore (View view) {
         dBmanager.insert(editText.getText().toString());
         lvcontent(getApplicationContext());
-        // clear the edittext view
+        // clear the edittext view -> the hint is shown again
         editText.setText("");
         closekeys();
     }
 
-
+    // set longclicklistner, delete item that was clicked from the database and from the listview
     public void createlongclicklistener(ListView view) {
         view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
                 TODOobj chore = (TODOobj) listView.getItemAtPosition(position);
-
                 dBmanager.delete(chore.getId());
-
-                listadapter.remove(chore); // wat gaat hier fout
+                listadapter.remove(chore); // still unchecked call :(
+                // notify the listadapter that the dataset has been changed
                 listadapter.notifyDataSetChanged();
                 return false;
             }
         });
-
     }
 }
