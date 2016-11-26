@@ -15,9 +15,10 @@ public class DBmanager {
     private Context context;
     private SQLiteDatabase database;
 
-    // construct new dbhelper, get writable database
+    // construct new dbhelper
     public DBmanager(Context c){
         dbHelper = new DBhelper(c);
+        // open database connection
         database = dbHelper.getWritableDatabase();
     }
 

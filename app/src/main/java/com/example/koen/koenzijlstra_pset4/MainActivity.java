@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
         dBmanager = new DBmanager(getApplicationContext());
         listView = (ListView)findViewById(R.id.lvtodo);
 
+        // create examples to show how app works
+        dBmanager.insert("First thing to do");
+        dBmanager.insert("Another thing to do");
+        dBmanager.insert("Third thing to do");
+
         // set content of the listview
         lvcontent(getApplicationContext());
         // start function that deletes item when item is hold
