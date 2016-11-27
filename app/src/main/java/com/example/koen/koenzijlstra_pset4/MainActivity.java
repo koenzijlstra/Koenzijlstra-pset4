@@ -1,18 +1,18 @@
 package com.example.koen.koenzijlstra_pset4;
 
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+        import android.content.Context;
+        import android.support.v7.app.AppCompatActivity;
+        import android.os.Bundle;
+        import android.view.View;
+        import android.view.inputmethod.InputMethodManager;
+        import android.widget.AdapterView;
+        import android.widget.ArrayAdapter;
+        import android.widget.EditText;
+        import android.widget.ListAdapter;
+        import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.List;
+        import java.util.ArrayList;
+        import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,16 +31,16 @@ public class MainActivity extends AppCompatActivity {
         dBmanager = new DBmanager(getApplicationContext());
         listView = (ListView)findViewById(R.id.lvtodo);
 
-        // create examples to show how app works
-        dBmanager.insert("First thing to do");
-        dBmanager.insert("Another thing to do");
-        dBmanager.insert("Third thing to do");
-
         // set content of the listview
         lvcontent(getApplicationContext());
         // start function that deletes item when item is hold
         createlongclicklistener(listView);
     }
+
+//    @Override
+//    public void onSavedIntanceState(Bundle savedInstanceState){
+//        savedInstanceState.putBoolean();
+//    }
 
     public void lvcontent (Context context) {
         // retrieve list of all todos
