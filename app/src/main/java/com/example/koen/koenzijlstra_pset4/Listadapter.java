@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.CompoundButton;
 
 import java.util.List;
 
@@ -37,6 +38,12 @@ public class Listadapter extends ArrayAdapter {
         // get checkbox via id, set the looks of the checkbox to its state
         CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.done);
         checkBox.setChecked(chore.ischecked());
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                chore.setChecked(isChecked);
+            }
+        });
 
         // return the view of the row
         return convertView;

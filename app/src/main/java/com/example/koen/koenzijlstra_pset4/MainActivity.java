@@ -1,6 +1,9 @@
 package com.example.koen.koenzijlstra_pset4;
 
         import android.content.Context;
+        import android.database.Cursor;
+        import android.database.sqlite.SQLiteDatabase;
+        import android.os.Parcelable;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.view.View;
@@ -10,6 +13,7 @@ package com.example.koen.koenzijlstra_pset4;
         import android.widget.EditText;
         import android.widget.ListAdapter;
         import android.widget.ListView;
+        import android.widget.Toast;
 
         import java.util.ArrayList;
         import java.util.List;
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private DBmanager dBmanager;
     private Listadapter listadapter;
     private EditText editText;
+    private ArrayList<TODOobj> allchores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,27 +32,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // find the edittext where user writes his chore. create new database manager, find listview that displays all todos
-        editText = (EditText) findViewById(R.id.choreinput) ;
+        editText = (EditText) findViewById(R.id.choreinput);
         dBmanager = new DBmanager(getApplicationContext());
-        listView = (ListView)findViewById(R.id.lvtodo);
+        listView = (ListView) findViewById(R.id.lvtodo);
 
-        // set content of the listview
-        lvcontent(getApplicationContext());
+        if (savedInstanceState != null) {
+            allchores = savedInstanceState.getParcelableArrayList("alkey");
+            listadapter = new Listadapter(getApplicationContext(), allchores);
+            listView.setAdapter(listadapter);
+        } else {
+            // set content of the listview
+            lvcontent(getApplicationContext());
+        }
         // start function that deletes item when item is hold
         createlongclicklistener(listView);
     }
 
 //    @Override
 //    public void onSavedIntanceState(Bundle savedInstanceState){
-//        savedInstanceState.putBoolean();
-//    }
+//    savedInstanceState.putBoolean("CHECKBOX_STATE", mCheckbox.isChecked());
+//    super.onSaveInstanceState(savedInstanceState);
 
     public void lvcontent (Context context) {
         // retrieve list of all todos
         List chores = dBmanager.getalltodos();
 
         // new arraylist todo_ objects
-        ArrayList<TODOobj> allchores = new ArrayList<TODOobj>();
+        allchores = new ArrayList<>();
 
         // loop over list, get objects, remember id, string and checked. add to arraylist
         for (int i = 0; i < chores.size(); i++){
@@ -63,19 +74,31 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(listadapter);
     }
 
-    // closes the keyboard that showes up when/after typing. from http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
-    public void closekeys () {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelableArrayList("alkey", allchores);
     }
 
     // when button is clicked, create the chore and close keyboard
     public void createchore (View view) {
-        dBmanager.insert(editText.getText().toString());
-        lvcontent(getApplicationContext());
-        // clear the edittext view -> the hint is shown again
-        editText.setText("");
-        closekeys();
+        if (editText.getText().toString().isEmpty()){
+            // toast
+            Toast.makeText(this, "Please enter to-do", Toast.LENGTH_SHORT).show();
+        }
+
+        else{
+            dBmanager.insert(editText.getText().toString());
+            lvcontent(getApplicationContext());
+            // clear the edittext view -> the hint is shown again
+            editText.setText("");
+            closekeys();
+        }
+    }
+    // closes the keyboard that showes up when/after typing. from http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+    public void closekeys () {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
 
     // set longclicklistner, delete item that was clicked from the database and from the listview

@@ -48,8 +48,6 @@ public class DBhelper extends SQLiteOpenHelper {
 
     }
 
-    // onupgrade -> necessary?
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // drop old table
